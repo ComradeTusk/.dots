@@ -79,6 +79,8 @@ plugins=(
   jsontools
   you-should-use
   zsh-autosuggestions
+  colored-man-pages
+  zoxide
   zsh-syntax-highlighting
 )
 source $ZSH/oh-my-zsh.sh
@@ -120,10 +122,8 @@ export LANG=en_US.UTF-8
 # - $ZSH_CUSTOM/aliases.zsh
 # - $ZSH_CUSTOM/macos.zsh
 # For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
-[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
+alias v="nvim"
+alias vi="nvim"
+alias vim="nvim"
+alias todo="nvim ~/.todo.txt"
+alias hyprconfig="nvim ~/.config/hypr/hyprland.conf"

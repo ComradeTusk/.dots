@@ -12,5 +12,4 @@ HISTORY_IGNORE='(git reset*|clear|reboot|shutdown|exit|cd ..|cd ~|..|~)'
 # editor
 export EDITOR="nvim"
 export VISUAL="nvim"
-
 export MANPAGER='nvim +Man!'
