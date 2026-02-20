@@ -9,8 +9,6 @@ export ZSH="$HOME/.oh-my-zsh"
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="robbyrussell_1"
-#ZSH_THEME="powerlevel10k/powerlevel10k"
-
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
@@ -99,7 +97,7 @@ function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
 	command yazi "$@" --cwd-file="$tmp"
 	IFS= read -r -d '' cwd < "$tmp"
-	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && z "$cwd"
 	rm -f -- "$tmp"
 }
 # You may need to manually set your language environment
@@ -122,8 +120,12 @@ export LANG=en_US.UTF-8
 # - $ZSH_CUSTOM/aliases.zsh
 # - $ZSH_CUSTOM/macos.zsh
 # For a full list of active aliases, run `alias`.
+#
+alias c="clear"
 alias v="nvim"
 alias vi="nvim"
 alias vim="nvim"
 alias todo="nvim ~/.todo.txt"
 alias hyprconfig="nvim ~/.config/hypr/hyprland.conf"
+alias zshconfig="nvim ~/.config/zsh/.zshrc"
+alias kickstartconfig="nvim ~/.config/nvim/init.lua"
