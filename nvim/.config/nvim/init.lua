@@ -453,6 +453,7 @@ require('lazy').setup({
         -- pyright = {},
         -- rust_analyzer = {},
         --
+        basedpyright = {},
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
         --
@@ -469,9 +470,19 @@ require('lazy').setup({
       -- You can press `g?` for help in this menu.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
+
+        -- You can add other tools here that you want Mason to install
+        -- HTML
+        'html-lsp',
+        'prettierd',
+        'htmlhint',
+        -- LUA
         'lua-language-server', -- Lua Language server
         'stylua', -- Used to format Lua code
-        -- You can add other tools here that you want Mason to install
+        -- PYTHON
+        'basedpyright',
+        'ruff',
+        'debugpy',
       })
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -508,6 +519,8 @@ require('lazy').setup({
         },
       })
       vim.lsp.enable 'lua_ls'
+      vim.lsp.config('html', { capabilities = capabilities })
+      vim.lsp.enable 'html'
     end,
   },
 
@@ -541,8 +554,8 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        python = { 'ruff_format' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },

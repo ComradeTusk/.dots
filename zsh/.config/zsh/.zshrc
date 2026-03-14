@@ -82,7 +82,6 @@ plugins=(
   zsh-syntax-highlighting
 )
 source $ZSH/oh-my-zsh.sh
-bindkey -v
 export KEYTIMEOUT=1
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
@@ -99,6 +98,15 @@ function y() {
 	IFS= read -r -d '' cwd < "$tmp"
 	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && z "$cwd"
 	rm -f -- "$tmp"
+}
+
+function q() {
+  if [ ! -z "$1" ];
+  then
+    tldr "$1" | nvim
+  else
+    echo "usage: ? [command]"
+  fi
 }
 # You may need to manually set your language environment
 export LANG=en_US.UTF-8
@@ -121,11 +129,13 @@ export LANG=en_US.UTF-8
 # - $ZSH_CUSTOM/macos.zsh
 # For a full list of active aliases, run `alias`.
 #
+alias nfzf='nvim $(fzf --preview="bat --color=always --style=numbers {}")'
+#alias cd="z"
 alias c="clear"
 alias v="nvim"
 alias vi="nvim"
 alias vim="nvim"
-alias todo="nvim ~/.todo.txt"
+alias todo="nvim ~/todo.txt"
 alias hyprconfig="nvim ~/.config/hypr/hyprland.conf"
 alias zshconfig="nvim ~/.config/zsh/.zshrc"
 alias kickstartconfig="nvim ~/.config/nvim/init.lua"
