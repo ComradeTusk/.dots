@@ -753,6 +753,9 @@ require('lazy').setup({
     },
   },
 })
+require('luasnip.loaders.from_lua').lazy_load()
+
+-- vim: ts=2 sts=2 sw=2 et
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
