@@ -313,6 +313,10 @@ require('lazy').setup({
       -- Document existing key chains
       spec = {
         { '<leader>f', group = '[F]uzzy Find', mode = { 'n', 'v' } },
+        { '<leader>c', group = '[C]lose', mode = { 'n', 'v' } },
+        { '<leader>ca', group = '[C]lose [A]ll', mode = { 'n', 'v' } },
+        { '<leader>m', group = '[M]arkView Toggles', mode = { 'n' } },
+        { '<leader>s', group = '[S]ession Manager', mode = { 'n', 'v' } },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>y', group = '[Y]azi', mode = { 'n', 'v' } },
@@ -448,17 +452,18 @@ require('lazy').setup({
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --  See `:help lsp-config` for information about keys and how to configure
       local servers = {
-        -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
-        -- rust_analyzer = {},
-        --
         basedpyright = {},
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
+        html = {},
+        cssls = {},
+        ts_ls = {},
+        emmet_ls = {
+          filetypes = { 'html', 'css', 'scss', 'less' },
+          cmd = { 'emmet-language-server', '--stdio' },
+        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -468,14 +473,8 @@ require('lazy').setup({
       --    :Mason
       --
       -- You can press `g?` for help in this menu.
-      local ensure_installed = vim.tbl_keys(servers or {})
+      local ensure_installed = {}
       vim.list_extend(ensure_installed, {
-
-        -- You can add other tools here that you want Mason to install
-        -- HTML
-        'html-lsp',
-        'prettierd',
-        'htmlhint',
         -- LUA
         'lua-language-server', -- Lua Language server
         'stylua', -- Used to format Lua code
@@ -483,6 +482,14 @@ require('lazy').setup({
         'basedpyright',
         'ruff',
         'debugpy',
+        -- HTML CSS SCSS JavaScript TypeScript
+        'prettierd',
+        'eslint_d',
+        'stylelint',
+        'html-lsp',
+        'css-lsp',
+        'typescript-language-server',
+        'emmet-language-server',
       })
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -528,14 +535,14 @@ require('lazy').setup({
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
     cmd = { 'ConformInfo' },
-    -- keys = {
-    --   {
-    --     '<leader>f',
-    --     function() require('conform').format { async = true, lsp_format = 'fallback' } end,
-    --     mode = '',
-    --     desc = '[F]ormat buffer',
-    --   },
-    -- },
+    keys = {
+      {
+        '<leader>C',
+        function() require('conform').format { async = true, lsp_format = 'fallback' } end,
+        mode = '',
+        desc = '[C]lean Up Buffer',
+      },
+    },
     opts = {
       notify_on_error = false,
       format_on_save = function(bufnr)
@@ -555,6 +562,12 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         python = { 'ruff_format' },
+
+        html = { 'prettierd' },
+        css = { 'prettierd' },
+        scss = { 'prettierd' },
+        javascript = { 'prettierd' },
+        typescript = { 'prettierd' },
         -- Conform can also run multiple formatters sequentially
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
@@ -619,7 +632,6 @@ require('lazy').setup({
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
         preset = 'default',
-
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
       },
@@ -633,7 +645,7 @@ require('lazy').setup({
       completion = {
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        documentation = { auto_show = false, auto_show_delay_ms = 500 },
+        documentation = { auto_show = true, auto_show_delay_ms = 500 },
       },
 
       sources = {
@@ -697,7 +709,8 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     config = function()
-      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+      local filetypes =
+        { 'bash', 'c', 'diff', 'html', 'css', 'javascript', 'typescript', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
       require('nvim-treesitter').install(filetypes)
       vim.api.nvim_create_autocmd('FileType', {
         pattern = filetypes,
