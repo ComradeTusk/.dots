@@ -49,11 +49,13 @@ return { -- Fuzzy Finder (files, lsp, etc)
       -- You can put your default mappings / updates / etc. in here
       --  All the info you're looking for is in `:help telescope.setup()`
       --
-      -- defaults = {
-      --   -- mappings = {
-      --   --   i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-      --   -- },
-      -- },
+      defaults = {
+        mappings = {
+          n = {
+            ['<esc>'] = require('telescope.actions').close,
+          },
+        },
+      },
       pickers = {
         colorscheme = {
           enable_preview = true,
@@ -95,7 +97,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
     vim.keymap.set('n', '<leader>f/', function()
       -- Fuzzy search inside the current buffer with a dropdown theme
       builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-        winblend = 10,
+        winblend = 15,
         previewer = false,
       })
     end, { desc = '[F]ind [/] in current buffer' })

@@ -1,15 +1,18 @@
 # Run `ghostty +show-config --default --docs` to view a list of
 # all available config options and their default values.
-
 # Config syntax crash course
 # ==========================
 # # The config file consists of simple key-value pairs,
 # # separated by equals signs.
 custom-shader = shaders/cursor_smear.glsl
-theme = Monokai Remastered
+theme =  cyberdream
+# theme = Monokai Remastered
 # theme = Gruvbox Dark Hard
 # theme = Rose Pine Dawn
 # background = 150C21
+background-opacity = 0.85
+background-blur-radius = 20
+background = #000000
 confirm-close-surface = false
 # window-padding-x = 2
 # # Some config options have unique syntaxes for their value,
@@ -19,6 +22,6 @@ confirm-close-surface = false
 #
 #
 # Font Configuration
-font-size = 20
+font-size = 19 
 font-family = "IosevkaTerm Nerd Font"
 

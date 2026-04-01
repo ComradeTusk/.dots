@@ -32,13 +32,19 @@ local function toggle_terminal()
 end
 
 return {
-
-  vim.keymap.set('n', '<C-d>', toggle_terminal, { desc = 'Toggle Terminal' }),
-  vim.keymap.set('t', '<C-d>', toggle_terminal, { desc = 'Toggle Terminal' }),
-  vim.keymap.set('n', '<leader>cb', '<cmd>bd<cr>', { desc = '[C]lose [B]uffer' }),
-  vim.keymap.set('n', '<leader>cw', '<cmd>close<cr>', { desc = '[C]lose [W]indow' }),
-  vim.keymap.set('n', '<leader>cab', '<cmd>bufdo qall<cr>', { desc = '[C]lose [A]ll [B]uffers' }),
-  vim.keymap.set('n', '<leader>caw', '<cmd>bufdo qall<cr>', { desc = '[C]lose [A]ll [W]indows' }),
+  -- vim.keymap.ser('n','a', function()
+  -- end, { desc = 'Open New Buffer' }),
+  vim.keymap.set('i', 'jj', '<Esc>j'),
+  -- vim.keymap.set('i', 'hh', '<Esc>h'),
+  vim.keymap.set('i', 'kk', '<Esc>k'),
+  -- vim.keymap.set('i', 'll', '<Esc>l'),
+  vim.keymap.set('n', '<C-/>', toggle_terminal, { desc = 'Toggle Terminal' }),
+  vim.keymap.set('t', '<C-/>', toggle_terminal, { desc = 'Toggle Terminal' }),
+  vim.keymap.set('n', '<leader>bc', '<cmd>bd<cr>', { desc = '[B]uffer [C]lose' }),
+  vim.keymap.set('n', '<leader>bf', '<cmd>Telescope buffers<cr>', { desc = '[B]uffer [F]ind' }),
+  vim.keymap.set('n', '<leader>wc', '<cmd>close<cr>', { desc = '[W]indow [C]lose' }),
+  vim.keymap.set('n', '<leader>bC', '<cmd>bufdo qall<cr>', { desc = 'Close All Buffers' }),
+  vim.keymap.set('n', '<leader>wC', '<cmd>bufdo qall<cr>', { desc = 'Close All Windows' }),
   -- open small terminal on the bottom of the screen
   vim.keymap.set('t', 'C-d', '<cmd>bd!<cr>', { desc = 'Exit Terminal Mode' }),
   --

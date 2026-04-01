@@ -170,6 +170,7 @@ vim.o.confirm = true
 --  See `:help hlsearch`
 
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 
@@ -312,14 +313,14 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
-        { '<leader>f', group = '[F]uzzy Find', mode = { 'n', 'v' } },
-        { '<leader>c', group = '[C]lose', mode = { 'n', 'v' } },
-        { '<leader>ca', group = '[C]lose [A]ll', mode = { 'n', 'v' } },
-        { '<leader>m', group = '[M]arkView Toggles', mode = { 'n' } },
-        { '<leader>s', group = '[S]ession Manager', mode = { 'n', 'v' } },
-        { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-        { '<leader>y', group = '[Y]azi', mode = { 'n', 'v' } },
+        { '<leader>f', group = 'Fuzzy Find', mode = { 'n', 'v' } },
+        { '<leader>b', group = 'Buffer', mode = { 'n', 'v' } },
+        { '<leader>w', group = 'Window', mode = { 'n', 'v' } },
+        { '<leader>m', group = 'MarkView Toggles', mode = { 'n' } },
+        { '<leader>s', group = 'Session Manager', mode = { 'n', 'v' } },
+        { '<leader>h', group = 'Git Hunk', mode = { 'n', 'v' } },
+        { '<leader>y', group = 'Yazi', mode = { 'n', 'v' } },
+        { '<leader>u', group = 'User Interface', mode = { 'n', 'v' } },
       },
     },
   },
@@ -331,8 +332,7 @@ require('lazy').setup({
   --
   -- Use the `dependencies` key to specify the dependencies of a particular plugin
 
-  -- LSP Plugins
-  {
+  { -- LSP Plugins
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
     dependencies = {
@@ -457,6 +457,21 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
+        --
+        clangd = {
+          cmd = {
+            'clangd',
+            '--background-index',
+            '--clang-tidy',
+            '--header-insertion=never',
+            '--completion-style=detailed',
+            '--function-arg-placeholders=1',
+          },
+          init_options = {
+            usePlaceholders = true,
+            completeUnimported = true,
+          },
+        },
         html = {},
         cssls = {},
         ts_ls = {},
@@ -475,6 +490,10 @@ require('lazy').setup({
       -- You can press `g?` for help in this menu.
       local ensure_installed = {}
       vim.list_extend(ensure_installed, {
+        -- C/C++
+        'clangd',
+        'clang-format',
+        'codelldb',
         -- LUA
         'lua-language-server', -- Lua Language server
         'stylua', -- Used to format Lua code
@@ -562,6 +581,9 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         python = { 'ruff_format' },
+
+        c = { 'cppcheck' },
+        cpp = { 'cppcheck' },
 
         html = { 'prettierd' },
         css = { 'prettierd' },
@@ -706,19 +728,6 @@ require('lazy').setup({
     end,
   },
 
-  { -- Highlight, edit, and navigate code
-    'nvim-treesitter/nvim-treesitter',
-    config = function()
-      local filetypes =
-        { 'bash', 'c', 'diff', 'html', 'css', 'javascript', 'typescript', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
-      require('nvim-treesitter').install(filetypes)
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = filetypes,
-        callback = function() vim.treesitter.start() end,
-      })
-    end,
-  },
-
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -728,10 +737,10 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  require 'kickstart.plugins.debug',
+  -- require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
-  require 'kickstart.plugins.autopairs',
+  -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
@@ -740,6 +749,7 @@ require('lazy').setup({
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   { import = 'custom.plugins' },
+  { import = 'custom.ui' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
@@ -747,22 +757,20 @@ require('lazy').setup({
   -- you can continue same window with `<space>sr` which resumes last telescope search
 }, {
   ui = {
-    -- If you are using a Nerd Font: set icons to an empty table which will use the
-    -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
     icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
+      cmd = '⚡', -- command execution
+      config = '⚙️', -- configuration
+      event = '📅', -- events
+      ft = '📄', -- filetype
+      init = '🚀', -- initialization/start
+      keys = '⌨️', -- keybindings
+      plugin = '🔌', -- plugins
+      runtime = '💻', -- runtime
+      require = '📦', -- dependencies/modules
+      source = '🔍', -- source/reference
+      start = '▶️', -- start/load
+      task = '📝', -- tasks/todos
+      lazy = '💤', -- lazy loading
     },
   },
 })

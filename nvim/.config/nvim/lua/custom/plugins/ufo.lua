@@ -14,16 +14,16 @@ return {
     -- Keymaps
     vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
     vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
-    vim.keymap.set('n', 'zK', function()
+    vim.keymap.set('n', 'zP', function()
       local winid = require('ufo').peekFoldedLinesUnderCursor()
       if not winid then vim.lsp.buf.hover() end
     end, { desc = 'Peek Fold' })
     -- Setup
     require('ufo').setup {
       provider_selector = function(bufnr, filetype, buftype)
-        return { 'lsp', 'indent' }
+        -- return { 'treesitter', 'lsp', 'indent' }
         -- or:
-        -- return { "treesitter", "indent" }
+        return { 'treesitter', 'indent' }
       end,
     }
   end,

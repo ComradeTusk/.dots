@@ -8,7 +8,7 @@ return {
         auto_integrations = true,
         color_overrides = {
           all = {
-            base = '#150C21',
+            base = '#000000',
           },
         },
       }
