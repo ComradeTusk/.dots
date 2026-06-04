@@ -31,15 +31,24 @@ local function toggle_terminal()
   end
 end
 
+local on_exit = function(obj)
+  vim.schedule(function() vim.fn.setreg('+', vim.fn.trim(obj.stdout)) end)
+end
+
 return {
   -- vim.keymap.ser('n','a', function()
+  --
+  vim.keymap.set('n', '<C-S>', '<cmd>:w<cr>', { desc = 'Write Buffer' }),
+  vim.keymap.set('n', '<leader>p', function() vim.system({ 'hyprpicker' }, {}, on_exit) end, { desc = 'ColorPicker' }),
   -- end, { desc = 'Open New Buffer' }),
-  vim.keymap.set('i', 'jj', '<Esc>j'),
+  vim.keymap.set('i', 'jj', '<Esc>'),
   -- vim.keymap.set('i', 'hh', '<Esc>h'),
-  vim.keymap.set('i', 'kk', '<Esc>k'),
+  vim.keymap.set('i', 'kk', '<Esc>'),
   -- vim.keymap.set('i', 'll', '<Esc>l'),
   vim.keymap.set('n', '<C-/>', toggle_terminal, { desc = 'Toggle Terminal' }),
-  vim.keymap.set('t', '<C-/>', toggle_terminal, { desc = 'Toggle Terminal' }),
+  vim.keymap.set('n', '<C-/>', toggle_terminal, { desc = 'Toggle Terminal' }),
+  vim.keymap.set('t', '<\\>', toggle_terminal, { desc = 'Toggle Terminal' }),
+  vim.keymap.set('t', '<\\>', toggle_terminal, { desc = 'Toggle Terminal' }),
   vim.keymap.set('n', '<leader>bc', '<cmd>bd<cr>', { desc = '[B]uffer [C]lose' }),
   vim.keymap.set('n', '<leader>bf', '<cmd>Telescope buffers<cr>', { desc = '[B]uffer [F]ind' }),
   vim.keymap.set('n', '<leader>wc', '<cmd>close<cr>', { desc = '[W]indow [C]lose' }),

@@ -112,6 +112,9 @@ return {
   'nvimdev/dashboard-nvim',
   event = 'VimEnter',
   dependencies = { 'nvim-tree/nvim-web-devicons' },
+  keys = {
+    { '<leader>d', '<cmd>Dashboard<cr>', desc = 'Open DashBoard' },
+  },
   config = function()
     require('dashboard').setup {
       theme = 'doom', -- "doom" (centered) | "hyper" (grid shortcuts)
@@ -130,5 +133,4 @@ return {
       },
     }
   end,
-  vim.keymap.set('n', '<leader>d', '<cmd>Dashboard<cr>', { desc = 'Open DashBoard' }),
 }

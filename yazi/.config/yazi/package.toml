@@ -1,5 +1,12 @@
-[plugin]
-deps = []
+[[plugin.deps]]
+use = "Lil-Dank/lazygit"
+rev = "8c4086c"
+hash = "85316b5e9abeae2531d3e5d02a094381"
+
+[[plugin.deps]]
+use = "ktunprasert/git-files"
+rev = "529444e"
+hash = "a028c3c06630a33b068f4d5bd714a795"
 
 [[flavor.deps]]
 use = "BennyOe/onedark"

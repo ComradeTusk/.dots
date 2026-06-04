@@ -3,11 +3,11 @@ return {
   lazy = false,
   config = function()
     require('themery').setup {
-      themes = { 'gruvbox-material', 'catppuccin', 'monokai-pro', 'onedark', 'cyberdream' },
+      themes = { 'gruvbox-material', 'catppuccin', 'monokai-pro', 'onedark', 'cyberdream', 'rose-pine' },
       livePreview = true,
     }
   end,
   keys = {
-    vim.keymap.set('n', '<leader>uc', function() require('themery').themery() end, { desc = 'ColorScheme' }),
+    { '<leader>uc', function() require('themery').themery() end, desc = 'ColorScheme' },
   },
 }

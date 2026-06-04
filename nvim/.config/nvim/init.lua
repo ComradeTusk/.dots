@@ -93,6 +93,12 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- Enable nvim-lint autocmd (checked in lua/kickstart/plugins/lint.lua)
+vim.g.linting_enabled = true
+
+-- Enable 24-bit RGB color (required by most colorschemes and UI plugins)
+vim.opt.termguicolors = true
+
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
@@ -187,7 +193,9 @@ vim.diagnostic.config {
   virtual_lines = false, -- Teest shows up underneath the line, with virtual lines
 
   -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
-  jump = { float = true },
+  jump = {
+    on_jump = function(_, bufnr) vim.diagnostic.open_float { bufnr = bufnr, scope = 'cursor' } end,
+  },
 }
 
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -231,6 +239,50 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function() vim.hl.on_yank() end,
+})
+
+-- Inherit terminal background (blur/opacity) by clearing bg on common groups
+vim.api.nvim_create_autocmd('ColorScheme', {
+  group = vim.api.nvim_create_augroup('custom-transparent-bg', { clear = true }),
+  callback = function()
+    local groups = {
+      'Normal',
+      'NormalNC',
+      'NormalFloat',
+      'FloatBorder',
+      'FloatTitle',
+      'SignColumn',
+      'LineNr',
+      'CursorLineNr',
+      'EndOfBuffer',
+      'VertSplit',
+      'WinSeparator',
+      'StatusLine',
+      'StatusLineNC',
+      'TabLine',
+      'TabLineFill',
+      'TabLineSel',
+      'Folded',
+      'FoldColumn',
+      'MsgArea',
+      'TelescopeNormal',
+      'TelescopeBorder',
+      'TelescopePromptNormal',
+      'TelescopePromptBorder',
+      'TelescopeResultsNormal',
+      'TelescopeResultsBorder',
+      'TelescopePreviewNormal',
+      'TelescopePreviewBorder',
+      'NeoTreeNormal',
+      'NeoTreeNormalNC',
+      'NeoTreeEndOfBuffer',
+      'WhichKeyFloat',
+      'NotifyBackground',
+    }
+    for _, g in ipairs(groups) do
+      vim.api.nvim_set_hl(0, g, { bg = 'NONE', ctermbg = 'NONE' })
+    end
+  end,
 })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
@@ -310,6 +362,24 @@ require('lazy').setup({
       -- delay between pressing a key and opening which-key (milliseconds)
       delay = 0,
       icons = { mappings = vim.g.have_nerd_font },
+
+      -- Vertical right-side panel with consistent sizing
+      preset = false,
+      win = {
+        no_overlap = false,
+        width = { min = 45, max = 45 },
+        height = { min = 4, max = math.huge },
+        col = math.huge,
+        row = 0,
+        border = 'rounded',
+        padding = { 1, 2 },
+        title = true,
+        title_pos = 'center',
+      },
+      layout = {
+        width = { min = 20 },
+        spacing = 3,
+      },
 
       -- Document existing key chains
       spec = {
@@ -475,10 +545,12 @@ require('lazy').setup({
         html = {},
         cssls = {},
         ts_ls = {},
+        intelephense = {},
         emmet_ls = {
-          filetypes = { 'html', 'css', 'scss', 'less' },
+          filetypes = { 'html', 'css', 'scss', 'less', 'php' },
           cmd = { 'emmet-language-server', '--stdio' },
         },
+        sqls = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -509,6 +581,8 @@ require('lazy').setup({
         'css-lsp',
         'typescript-language-server',
         'emmet-language-server',
+        -- PHP
+        'intelephense',
       })
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -523,8 +597,9 @@ require('lazy').setup({
       vim.lsp.config('lua_ls', {
         on_init = function(client)
           if client.workspace_folders then
-            local path = client.workspace_folders[1].name
-            if path ~= vim.fn.stdpath 'config' and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then return end
+            local path = vim.fn.resolve(client.workspace_folders[1].name)
+            local config = vim.fn.resolve(vim.fn.stdpath 'config')
+            if path ~= config and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then return end
           end
 
           client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
@@ -541,7 +616,9 @@ require('lazy').setup({
           })
         end,
         settings = {
-          Lua = {},
+          Lua = {
+            diagnostics = { globals = { 'vim' } },
+          },
         },
       })
       vim.lsp.enable 'lua_ls'
@@ -578,6 +655,14 @@ require('lazy').setup({
           }
         end
       end,
+      formatters = {
+        phpcbf = {
+          prepend_args = { '--standard=PSR12' },
+        },
+        sql_formatter = {
+          prepend_args = { '--language', 'sqlite' },
+        },
+      },
       formatters_by_ft = {
         lua = { 'stylua' },
         python = { 'ruff_format' },
@@ -590,6 +675,9 @@ require('lazy').setup({
         scss = { 'prettierd' },
         javascript = { 'prettierd' },
         typescript = { 'prettierd' },
+
+        php = { 'phpcbf' },
+        sql = { 'sql_formatter' },
         -- Conform can also run multiple formatters sequentially
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
@@ -695,13 +783,7 @@ require('lazy').setup({
   { -- Collection of various small independent plugins/modules
     'nvim-mini/mini.nvim',
     config = function()
-      -- Better Around/Inside textobjects
-      --
-      -- Examples:
-      --  - va)  - [V]isually select [A]round [)]paren
-      --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
-      --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
+      -- NOTE: mini.ai is configured in lua/custom/plugins/mini-ai.lua
 
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --

@@ -1,6 +1,6 @@
 export ZSH="$HOME/.oh-my-zsh"
 
-ZSH_THEME="robbyrussell_1"
+ZSH_THEME=""
 # ZSH_THEME="random"
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -75,6 +75,7 @@ plugins=(
   zsh-syntax-highlighting
 )
 source $ZSH/oh-my-zsh.sh
+eval "$(starship init zsh)"
 export KEYTIMEOUT=1
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^E' edit-command-line

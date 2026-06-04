@@ -9,7 +9,6 @@ return {
         markdown = { 'markdownlint' },
 
         python = { 'ruff' },
-        lua = { 'selene' },
 
         javascript = { 'eslint_d' },
         typescript = { 'eslint_d' },
@@ -18,7 +17,15 @@ return {
 
         c = { 'cppcheck' },
         cpp = { 'cppcheck' },
+
+        php = { 'phpcs' },
+
+        -- sql = { 'sqlfluff' },
       }
+      lint.linters.phpcs.args = { '-q', '--standard=PSR12', '--report=json', '-' }
+
+      -- lint.linters.sqlfluff.args = { 'lint', '--dialect', 'sqlite', '--format', 'json', '-' }
+
       lint.linters.cppcheck = {
         cmd = 'cppcheck',
         args = {

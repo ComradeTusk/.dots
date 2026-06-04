@@ -13,11 +13,10 @@ return {
     { '<leader>bj', '<cmd>BufferLinePick<cr>', desc = 'Pick Buffer' },
   },
   config = function()
-    vim.opt.termguicolors = true
     require('bufferline').setup {
       options = {
         diagnostics = 'nvim_lsp',
-        separator_style = 'slope',
+        -- separator_style = 'slope',
         indicator = {
           style = 'underline',
         },

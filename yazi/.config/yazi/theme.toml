@@ -1,7 +1,3 @@
-[flavor]
-dark = "monokai-vibrant"
-light = "monokai-vibrant"
-
 [icon]
 [[icon.rules]]
 name = "*/"

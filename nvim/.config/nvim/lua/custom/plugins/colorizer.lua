@@ -1,4 +1,7 @@
 return {
-  'norcalli/nvim-colorizer.lua',
-  config = function() require('colorizer').setup { 'html', 'css', 'scss', 'javascript' } end,
+  'catgoose/nvim-colorizer.lua',
+  event = { 'BufReadPre', 'BufNewFile' },
+  opts = {
+    filetypes = { 'html', 'css', 'scss', 'javascript', 'typescript', 'lua' },
+  },
 }

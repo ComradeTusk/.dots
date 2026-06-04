@@ -14,7 +14,10 @@ return {
     },
     {
       '<leader>rs',
-      function() require('telescope').extensions.refactoring.refactors() end,
+      function()
+        require('telescope').load_extension('refactoring')
+        require('telescope').extensions.refactoring.refactors()
+      end,
       desc = 'Refactor: Pick (Telescope)',
       mode = { 'n', 'x' },
     },
@@ -65,8 +68,5 @@ return {
   opts = {
     show_success_message = true,
   },
-  config = function(_, opts)
-    require('refactoring').setup(opts)
-    require('telescope').load_extension 'refactoring'
-  end,
+  config = function(_, opts) require('refactoring').setup(opts) end,
 }

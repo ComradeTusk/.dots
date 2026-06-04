@@ -11,7 +11,6 @@ return {
       'typescript',
       'tsx',
       'json',
-      'jsonc',
       -- Systems
       'c',
       'cpp',
@@ -25,6 +24,8 @@ return {
       'ruby',
       'lua',
       'luadoc',
+      'php',
+      'phpdoc',
       -- Config & markup
       'yaml',
       'toml',
@@ -32,6 +33,7 @@ return {
       'markdown',
       'markdown_inline',
       'diff',
+      'sql',
       -- Vim / Neovim
       'vim',
       'vimdoc',
@@ -41,9 +43,12 @@ return {
     -- Install parsers (new API)
     require('nvim-treesitter').install(filetypes)
 
+    -- Map jsonc filetype to the json parser (no separate jsonc parser in main branch)
+    vim.treesitter.language.register('json', 'jsonc')
+
     -- Enable Treesitter highlighting
     vim.api.nvim_create_autocmd('FileType', {
-      pattern = filetypes,
+      pattern = vim.list_extend(vim.deepcopy(filetypes), { 'jsonc' }),
       callback = function() vim.treesitter.start() end,
     })
   end,
